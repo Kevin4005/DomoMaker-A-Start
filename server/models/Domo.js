@@ -5,8 +5,8 @@ const _ = require('underscore');
 
 let DomoModel = {};
 
-
-const convertId = mongoose.Types.ObjectId;
+// mongoose.Types.ObjectIS is a function that converts string ID into Mongo ID
+const convertID = mongoose.Types.ObjectId;
 const setName = (name) => _.escape(name).trim();
 
 const DomoSchema = new mongoose.Schema({
@@ -16,19 +16,16 @@ const DomoSchema = new mongoose.Schema({
     trim: true,
     set: setName,
   },
-
   age: {
     type: Number,
     min: 0,
     required: true,
   },
-
   owner: {
     type: mongoose.Schema.ObjectId,
     required: true,
     ref: 'Account',
   },
-
   createdData: {
     type: Date,
     default: Date.now,
@@ -40,10 +37,11 @@ DomoSchema.statics.toAPI = (doc) => ({
   age: doc.age,
 });
 
-DomoSchema.statics.findByOwner = (ownerId, callback) => {
+DomoSchema.statics.findByOwner = (ownerID, callback) => {
   const search = {
-    owner: convertId(ownerId),
+    owner: convertID(ownerID),
   };
+
   return DomoModel.find(search).select('name age').lean().exec(callback);
 };
 
